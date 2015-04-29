@@ -80,3 +80,9 @@ sed -i '.original' 's/Vendor_Module/${VENDOR_NAME}_${MODULE_NAME}/g' $file
 file="${SCRIPT_DIR}/composer.json"
 echo "Replacing 'module/vendor' with '${COMPOSER_NAME}' in $file..."
 sed -i '.original' 's|vendor/module|webgriffe/store-redirect|g' $file
+
+for i in $(find ${SCRIPT_DIR} -name "*.original")
+do
+        echo "Removing $i..."
+        rm $i
+done
