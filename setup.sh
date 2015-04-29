@@ -83,7 +83,7 @@ file="${SCRIPT_DIR}/modman"
 echo "Replacing 'Vendor_Module' with '${VENDOR_NAME}_${MODULE_NAME}' in $file..."
 sed -i ".original" "s/Vendor_Module/${VENDOR_NAME}_${MODULE_NAME}/g" $file
 echo "Replacing 'Vendor/Module' with '${VENDOR_NAME}/${MODULE_NAME}' in $file..."
-sed -i ".original" "s|Vendor/Module|${VENDOR_NAME}/${MODULE_NAME}/g" $file
+sed -i ".original" "s|Vendor/Module|${VENDOR_NAME}/${MODULE_NAME}|g" $file
 
 file="${SCRIPT_DIR}/composer.json"
 echo "Replacing 'module/vendor' with '${COMPOSER_NAME}' in $file..."
