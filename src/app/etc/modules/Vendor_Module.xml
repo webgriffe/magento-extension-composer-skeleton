@@ -3,7 +3,7 @@
     <modules>
         <Vendor_Module>
             <active>true</active>
-            <codePool>local</codePool>
+            <codePool>community</codePool>
         </Vendor_Module>
     </modules>
 </config>
