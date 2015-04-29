@@ -86,3 +86,6 @@ do
         echo "Removing $i..."
         rm $i
 done
+
+echo "Removing .git files"
+rm -rf "${SCRIPT_DIR}/.git/"
