@@ -1,6 +1,12 @@
 #!/usr/bin/env sh
 
 SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+
+if [ -z "${SCRIPT_DIR}" ]; then
+	echo "Error! Script directory is empty. This should not be possible."
+	exit 1;
+fi
+
 VENDOR_NAME=$1
 MODULE_NAME=$2
 COMPOSER_NAME=$3
@@ -58,28 +64,28 @@ done
 for i in $(find ${SCRIPT_DIR} -name "*.php")
 do
 	echo "Replacing 'Vendor_Module' with '${VENDOR_NAME}_${MODULE_NAME}' in $i..."
-	sed -i '.original' 's/Vendor_Module/${VENDOR_NAME}_${MODULE_NAME}/g' $i
+	sed -i ".original" "s/Vendor_Module/${VENDOR_NAME}_${MODULE_NAME}/g" $i
 done
 
 for i in $(find ${SCRIPT_DIR} -name "*.xml")
 do
         echo "Replacing 'Vendor_Module' with '${VENDOR_NAME}_${MODULE_NAME}' in $i..."
-        sed -i '.original' 's/Vendor_Module/${VENDOR_NAME}_${MODULE_NAME}/g' $i
+        sed -i ".original" "s/Vendor_Module/${VENDOR_NAME}_${MODULE_NAME}/g" $i
 done
 
 for i in $(find ${SCRIPT_DIR} -name "*.xml")
 do
         echo "Replacing 'vendor_module' with '${VENDOR_NAME_LOWER}_${MODULE_NAME_LOWER}' in $i..."
-        sed -i '.original' 's/vendor_module/${VENDOR_NAME_LOWER}_${MODULE_NAME_LOWER}/g' $i
+        sed -i ".original" "s/vendor_module/${VENDOR_NAME_LOWER}_${MODULE_NAME_LOWER}/g" $i
 done
 
 file="${SCRIPT_DIR}/modman"
 echo "Replacing 'Vendor_Module' with '${VENDOR_NAME}_${MODULE_NAME}' in $file..."
-sed -i '.original' 's/Vendor_Module/${VENDOR_NAME}_${MODULE_NAME}/g' $file
+sed -i ".original" "s/Vendor_Module/${VENDOR_NAME}_${MODULE_NAME}/g" $file
 
 file="${SCRIPT_DIR}/composer.json"
 echo "Replacing 'module/vendor' with '${COMPOSER_NAME}' in $file..."
-sed -i '.original' 's|vendor/module|webgriffe/store-redirect|g' $file
+sed -i ".original" "s|vendor/module|${COMPOSER_NAME}|g" $file
 
 for i in $(find ${SCRIPT_DIR} -name "*.original")
 do
@@ -89,3 +95,6 @@ done
 
 echo "Removing .git files"
 rm -rf "${SCRIPT_DIR}/.git/"
+
+echo "Removing myself (${BASH_SOURCE[0]})! :("
+rm -f "${BASH_SOURCE[0]}"
