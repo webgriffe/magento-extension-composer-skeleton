@@ -1,5 +1,22 @@
 #!/usr/bin/env sh
 
+function sedi {
+    if [ $IS_MAC_OSX == 1 ]
+    then
+        sed -i ".original" $1 $2
+    else
+        sed -i.original $1 $2
+    fi;
+}
+
+if [ "$(uname)" != "Darwin" ]; then
+    IS_MAC_OSX=0
+    echo "Detected a non MAX OS X platform"
+else
+    IS_MAC_OSX=1
+    echo "Detect Mac OS X platform"
+fi
+
 SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
 if [ -z "${SCRIPT_DIR}" ]; then
@@ -42,57 +59,57 @@ done
 
 for i in $(find ${SCRIPT_DIR} -name "Module")
 do
-        dir=$(dirname "$i")
-        echo "$i -> $dir/${MODULE_NAME}"
+    dir=$(dirname "$i")
+    echo "$i -> $dir/${MODULE_NAME}"
 	mv $i "$dir/${MODULE_NAME}"
 done
 
 for i in $(find ${SCRIPT_DIR} -name "Vendor_Module.xml")
 do
-        dir=$(dirname "$i")
-        echo "$i -> $dir/${VENDOR_NAME}_${MODULE_NAME}.xml"
+    dir=$(dirname "$i")
+    echo "$i -> $dir/${VENDOR_NAME}_${MODULE_NAME}.xml"
 	mv $i "$dir/${VENDOR_NAME}_${MODULE_NAME}.xml"
 done
 
 for i in $(find ${SCRIPT_DIR} -name "vendor_module_setup")
 do
-        dir=$(dirname "$i")
-        echo "$i -> $dir/${VENDOR_NAME_LOWER}_${MODULE_NAME_LOWER}_setup"
+    dir=$(dirname "$i")
+    echo "$i -> $dir/${VENDOR_NAME_LOWER}_${MODULE_NAME_LOWER}_setup"
 	mv $i "$dir/${VENDOR_NAME_LOWER}_${MODULE_NAME_LOWER}_setup"
 done
 
 for i in $(find ${SCRIPT_DIR} -name "*.php")
 do
 	echo "Replacing 'Vendor_Module' with '${VENDOR_NAME}_${MODULE_NAME}' in $i..."
-	sed -i ".original" "s/Vendor_Module/${VENDOR_NAME}_${MODULE_NAME}/g" $i
+	sedi "s/Vendor_Module/${VENDOR_NAME}_${MODULE_NAME}/g" $i
 done
 
 for i in $(find ${SCRIPT_DIR} -name "*.xml")
 do
-        echo "Replacing 'Vendor_Module' with '${VENDOR_NAME}_${MODULE_NAME}' in $i..."
-        sed -i ".original" "s/Vendor_Module/${VENDOR_NAME}_${MODULE_NAME}/g" $i
+    echo "Replacing 'Vendor_Module' with '${VENDOR_NAME}_${MODULE_NAME}' in $i..."
+    sedi "s/Vendor_Module/${VENDOR_NAME}_${MODULE_NAME}/g" $i
 done
 
 for i in $(find ${SCRIPT_DIR} -name "*.xml")
 do
-        echo "Replacing 'vendor_module' with '${VENDOR_NAME_LOWER}_${MODULE_NAME_LOWER}' in $i..."
-        sed -i ".original" "s/vendor_module/${VENDOR_NAME_LOWER}_${MODULE_NAME_LOWER}/g" $i
+    echo "Replacing 'vendor_module' with '${VENDOR_NAME_LOWER}_${MODULE_NAME_LOWER}' in $i..."
+    sedi "s/vendor_module/${VENDOR_NAME_LOWER}_${MODULE_NAME_LOWER}/g" $i
 done
 
 file="${SCRIPT_DIR}/modman"
 echo "Replacing 'Vendor_Module' with '${VENDOR_NAME}_${MODULE_NAME}' in $file..."
-sed -i ".original" "s/Vendor_Module/${VENDOR_NAME}_${MODULE_NAME}/g" $file
+sedi "s/Vendor_Module/${VENDOR_NAME}_${MODULE_NAME}/g" $file
 echo "Replacing 'Vendor/Module' with '${VENDOR_NAME}/${MODULE_NAME}' in $file..."
-sed -i ".original" "s|Vendor/Module|${VENDOR_NAME}/${MODULE_NAME}|g" $file
+sedi "s|Vendor/Module|${VENDOR_NAME}/${MODULE_NAME}|g" $file
 
 file="${SCRIPT_DIR}/composer.json"
 echo "Replacing 'module/vendor' with '${COMPOSER_NAME}' in $file..."
-sed -i ".original" "s|vendor/module|${COMPOSER_NAME}|g" $file
+sedi "s|vendor/module|${COMPOSER_NAME}|g" $file
 
 for i in $(find ${SCRIPT_DIR} -name "*.original")
 do
-        echo "Removing $i..."
-        rm $i
+    echo "Removing $i..."
+    rm $i
 done
 
 echo "Removing .git files"
